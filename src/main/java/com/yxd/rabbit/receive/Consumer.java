@@ -18,7 +18,11 @@ public class Consumer {
     public void receive() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         String host = SingleChannel.getConfig("mqIP");
+        int port = Integer.parseInt(SingleChannel.getConfig("mqPort"));
         factory.setHost(host);
+        factory.setPort(port);
+        factory.setUsername("guest");
+        factory.setPassword("guest");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGCE_NAME,EXCHANGCE_TYPE);
@@ -37,7 +41,7 @@ public class Consumer {
         //绑定channel及消费定义
         channel.basicConsume(queueName,true,innerConsumer);
         //关闭资源
-        channel.close();
-        connection.close();
+        //channel.close();
+        //connection.close();
     }
 }

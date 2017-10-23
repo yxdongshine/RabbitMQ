@@ -7,7 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SingleChannel {
     //构造方法私有
-    private SingleChannel(){}
+    private SingleChannel(){
+    }
 
     //生命该类的对象
     private static SingleChannel sc = null ;
@@ -15,7 +16,7 @@ public class SingleChannel {
     //统一的资源内存管理
     ConcurrentHashMap<String,String> configInfo = new ConcurrentHashMap<String,String>();
     //统一管理此类的获取
-    private static SingleChannel getInstance(){
+    public static SingleChannel getInstance(){
         synchronized (SingleChannel.class){
             if(sc == null)
                 sc = new SingleChannel();
@@ -41,4 +42,6 @@ public class SingleChannel {
     public void setConfigInfo(ConcurrentHashMap<String, String> configInfo) {
         this.configInfo = configInfo;
     }
+
+
 }
