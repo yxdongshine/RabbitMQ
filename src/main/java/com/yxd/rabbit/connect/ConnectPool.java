@@ -5,6 +5,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.yxd.systeminfrastructure.SingleChannel;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -15,9 +16,14 @@ public class ConnectPool {
 
     private Logger log = Logger.getLogger(this.getClass().getName());
 
+    //连接池个数
+    private int connectNum = 10;
+
     private static ConnectPool connectPool = null;
     //rabbitMQ连接工厂初始化
     private ConnectionFactory connectionFactory = new ConnectionFactory();
+    //线程池队列
+    ConcurrentLinkedQueue<Connection> connectionQueue = new ConcurrentLinkedQueue();
 
     private ConnectPool(){}
 
@@ -25,6 +31,7 @@ public class ConnectPool {
         synchronized (ConnectPool.class){
             if (null != connectPool){
                 connectPool = new ConnectPool();
+
             }
         }
         return connectPool;
@@ -35,6 +42,9 @@ public class ConnectPool {
      * @return
      */
     private Connection initConnection(){
+        //初始化连接池数量
+        this.connectNum = Integer.parseInt(SingleChannel.getConfig("connect_num"));
+
         String host = SingleChannel.getConfig("mqIP");
         int port = Integer.parseInt(SingleChannel.getConfig("mqPort"));
         connectionFactory.setHost(host);
@@ -53,5 +63,32 @@ public class ConnectPool {
         }
         return connection;
     }
+
+    /**
+     *从连接池中获取一个connetion
+     * @return
+     */
+    private Connection getConnection() {
+        Connection connection = null;
+        if (connectionQueue.size() < connectNum){
+            connection = initConnection();
+            connectionQueue.offer(connection);
+        }else{
+            connection = connectionQueue.poll();
+        }
+        return connection;
+    }
+
+
+    /**
+     * 归还连接
+     * @return
+     */
+    private void putConnection(Connection connection) {
+        if (connectionQueue.size() < connectNum){
+            connectionQueue.offer(connection);
+        }
+    }
+
 
 }
