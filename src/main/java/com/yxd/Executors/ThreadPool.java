@@ -25,7 +25,7 @@ public class ThreadPool {
     }
 
     //添加线程
-    private synchronized void addTask(Runnable runnable){
+    public synchronized void addTask(Runnable runnable){
         if (null != runnable)
             getInstance().getEs().submit(runnable);
     }

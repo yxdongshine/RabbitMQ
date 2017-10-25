@@ -68,7 +68,7 @@ public class ConnectPool {
      *从连接池中获取一个connetion
      * @return
      */
-    private Connection getConnection() {
+    public Connection getConnection() {
         Connection connection = null;
         if (connectionQueue.size() < connectNum){
             connection = initConnection();
@@ -84,7 +84,7 @@ public class ConnectPool {
      * 归还连接
      * @return
      */
-    private void putConnection(Connection connection) {
+    public void putConnection(Connection connection) {
         if (connectionQueue.size() < connectNum){
             connectionQueue.offer(connection);
         }
