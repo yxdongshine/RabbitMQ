@@ -28,6 +28,10 @@ public class StartProducer implements Runnable{
     public static void main(String[] args) {
         //加载资源
         StartLoadProperties.LoadProperties();
-        new StartProducer().run();
+        //new StartProducer().run();
+        //测试异步
+        for (int i=0;i<1000;i++){
+            new BusinessProducer().asynSend("hello"+i);
+        }
     }
 }

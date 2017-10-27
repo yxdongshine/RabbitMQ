@@ -29,7 +29,7 @@ public class ConnectPool {
 
     public static ConnectPool getInstance(){
         synchronized (ConnectPool.class){
-            if (null != connectPool){
+            if (connectPool == null ){
                 connectPool = new ConnectPool();
 
             }
@@ -68,13 +68,16 @@ public class ConnectPool {
      *从连接池中获取一个connetion
      * @return
      */
-    public Connection getConnection() {
+    public  Connection getConnection() {
         Connection connection = null;
-        if (connectionQueue.size() < connectNum){
-            connection = initConnection();
-            connectionQueue.offer(connection);
-        }else{
-            connection = connectionQueue.poll();
+        synchronized(connectionQueue){
+            if (connectionQueue.size() < connectNum){
+                connection = initConnection();
+                connectionQueue.offer(connection);
+            }else{
+                connection = connectionQueue.poll();
+            }
+            System.out.println("come"+connectionQueue.size());
         }
         return connection;
     }
@@ -84,7 +87,7 @@ public class ConnectPool {
      * 归还连接
      * @return
      */
-    public void putConnection(Connection connection) {
+    public  void putConnection(Connection connection) {
         if (connectionQueue.size() < connectNum){
             connectionQueue.offer(connection);
         }

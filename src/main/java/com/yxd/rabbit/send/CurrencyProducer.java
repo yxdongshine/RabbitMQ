@@ -39,4 +39,12 @@ public abstract class CurrencyProducer extends AbstractProducer implements Runna
     public void run() {
         this.send(message);
     }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
 }

@@ -1,6 +1,7 @@
 package com.yxd.rabbit.send;
 
 import com.yxd.Executors.ThreadPool;
+import com.yxd.rabbit.body.Message;
 
 /**
  * Created by YXD on 2017/10/25.
@@ -32,7 +33,10 @@ public class BusinessProducer extends CurrencyProducer{
     /**
      * 提供一个异步发送的方法
      */
-    public void asynSend() {
+    public void asynSend(Object obj) {
+        Message message = new Message();
+        message.setB(((String)obj).getBytes());
+        super.setMessage(message);
         ThreadPool.getInstance().addTask(this);
     }
 
