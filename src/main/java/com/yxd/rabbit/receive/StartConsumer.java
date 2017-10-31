@@ -24,6 +24,8 @@ public class StartConsumer implements Runnable{
     public static void main(String[] args) {
         //加载资源
         StartLoadProperties.LoadProperties();
-        new StartConsumer().run();
+        //new StartConsumer().run();
+        //启动异步处理消息事件消费者
+        new BusinessConsumer().startConsumer();
     }
 }

@@ -1,6 +1,5 @@
 package com.yxd.rabbit.receive;
 
-import com.yxd.rabbit.body.Message;
 
 /**
  * Created by YXD on 2017/10/30.
