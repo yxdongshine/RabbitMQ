@@ -1,5 +1,7 @@
 package com.yxd.rabbit.receive.message.process.factory;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Envelope;
 import com.yxd.rabbit.body.Message;
 import com.yxd.rabbit.receive.message.process.inter.MessageHandle;
 
@@ -8,7 +10,9 @@ import com.yxd.rabbit.receive.message.process.inter.MessageHandle;
  */
 public abstract class CurrencyMessageHandle implements Runnable,MessageHandle{
 
-    public Message message = null;
+    private Message message = null;
+    private Envelope envelope = null;
+    private Channel channel = null;
 
     @Override
     public void run() {
@@ -21,5 +25,21 @@ public abstract class CurrencyMessageHandle implements Runnable,MessageHandle{
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    public Envelope getEnvelope() {
+        return envelope;
+    }
+
+    public void setEnvelope(Envelope envelope) {
+        this.envelope = envelope;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 }

@@ -1,6 +1,7 @@
 package com.yxd.rabbit.receive;
 
 import com.rabbitmq.client.*;
+import com.rabbitmq.client.Consumer;
 import com.yxd.Executors.ThreadPool;
 import com.yxd.rabbit.body.Message;
 import com.yxd.rabbit.connect.ConnectPool;
@@ -29,19 +30,25 @@ public abstract class CurrencyConsumer extends AbstractConsumer implements Runna
             //绑定路由key
             channel.queueBind(queueName,exchangceName,exchangceRouteKey);
             //自定义消费数据
-            com.rabbitmq.client.Consumer innerConsumer = new DefaultConsumer(channel){
+            Consumer innerConsumer = new DefaultConsumer(channel){
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     //String message = new String(body,"utf-8");
                     //System.out.println(envelope.getRoutingKey()+":"+message);
+                    //设置消息
                     Message message = new Message(body);
                     cmHandle.setMessage(message);
+                    //设置envelope
+                    cmHandle.setEnvelope(envelope);
                     //异步添加到线程池中
                     ThreadPool.getInstance().addTask(cmHandle);
                 }
             };
             //绑定channel及消费定义
             channel.basicConsume(queueName,true,innerConsumer);
+            //设置只有一条消费完再发送
+            channel.basicQos(1);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
