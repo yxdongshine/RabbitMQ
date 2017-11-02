@@ -24,6 +24,12 @@ public class BusinessMessageHandle extends CurrencyMessageHandle{
         } catch (IOException e) {
             e.printStackTrace();
             //这里事物回滚
+            //拒绝消息确认 重新进入消息队列中
+            try {
+                getChannel().basicReject(getEnvelope().getDeliveryTag(),true);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 }
